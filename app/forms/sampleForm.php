@@ -8,16 +8,22 @@ class SampleForm extends phalconCSSFormNone {
         ]);
 
         $this->add($this->_email());
+        $this->startFieldset("Hello World", [
+            "class" => "foobar"
+        ]);
         $this->add($this->_text());
         $this->add($this->_password());
         $this->add($this->_select());
         $this->add($this->_checkbox());
+        $this->endFieldset();
         $this->add($this->_textarea());
         $this->add($this->_hidden());
+        $this->startFieldset("Optionnal");
         $this->add($this->_file());
         $this->add($this->_date());
         $this->add($this->_numeric());
         $this->add($this->_radio());
+        $this->endFieldset();
         $this->add($this->_submit());
     }
 
