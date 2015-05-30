@@ -93,22 +93,30 @@ class phalconCSSFormNone extends \Phalcon\Forms\Form {
         $formAttributes = $this->_renderAttributes($this->_formAttributes);
         $html = "<form action=\"{$this->getAction()}\" method=\"{$this->_method}\" {$enctype} $formAttributes>";
         $currentFieldset = NULL;
-        foreach ($this->_inputElements as $element) {
-            if ($element[1] !== NULL) {
-                if ($element[1] !== $currentFieldset) {
+
+        if (count($this->_inputElements)) {
+            foreach ($this->_inputElements as $element) {
+                if ($element[1] !== NULL) {
+                    if ($element[1] !== $currentFieldset) {
+                        if ($currentFieldset !== NULL)
+                            $html .= "</fieldset>";
+                        $fieldset = $this->_fieldsets[$element[1]];
+                        $fieldsetAttributes = $this->_renderAttributes($fieldset[1]);
+                        $html .= "<fieldset {$fieldsetAttributes}><legend>{$fieldset[0]}</legend>";
+                        $currentFieldset = $element[1];
+                    }
+                } else {
                     if ($currentFieldset !== NULL)
                         $html .= "</fieldset>";
-                    $fieldset = $this->_fieldsets[$element[1]];
-                    $fieldsetAttributes = $this->_renderAttributes($fieldset[1]);
-                    $html .= "<fieldset {$fieldsetAttributes}><legend>{$fieldset[0]}</legend>";
-                    $currentFieldset = $element[1];
                 }
-            } else {
-                if ($currentFieldset !== NULL)
-                    $html .= "</fieldset>";
+                $html .= $this->renderElement($element[0]->getName());
+                $currentFieldset = $element[1];
             }
-            $html .= $this->renderElement($element[0]->getName());
-            $currentFieldset = $element[1];
+        }
+        if (count($this->_hiddenElements)) {
+            foreach ($this->_hiddenElements as $element) {
+                $html .= $this->renderElement($element->getName());
+            }
         }
         $html .= "</form>";
         return $html;
